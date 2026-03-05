@@ -54,11 +54,24 @@ Tobacco Situation Monitor (TSM) is an open-source intelligence (OSINT) platform 
 - GitHub account for repository access
 
 ### Installation
+
+#### Python Backend
 ```bash
 # Clone the repository
 git clone https://github.com/gandli/tobacco-situation-monitor.git
 cd tobacco-situation-monitor
 
+# Create virtual environment and install dependencies
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pip install -e ".[dev]"
+
+# Run tests
+pytest -v
+```
+
+#### Frontend (coming soon)
+```bash
 # Install dependencies
 npm install
 
