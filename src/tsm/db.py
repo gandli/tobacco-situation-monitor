@@ -2,7 +2,11 @@
 
 import sqlite3
 from pathlib import Path
+from .config import settings
 
+def get_db_path() -> str:
+    """Get the configured database path."""
+    return settings.database_url.replace("sqlite:///", "")
 
 def init_db(conn: sqlite3.Connection) -> None:
     """Initialize the database with the v0.1 schema."""
