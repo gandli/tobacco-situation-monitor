@@ -50,6 +50,105 @@ Tobacco Situation Monitor (TSM) is an open-source intelligence (OSINT) platform 
 
 - **[Operations Runbook](docs/runbook-v01.md)** - Operational procedures for V0.1 pipeline
 
+## 📈 OSINT Effect Dashboard (V0.1)
+
+The KPI Dashboard provides real-time effectiveness metrics for monitoring OSINT pipeline performance.
+
+### KPI Definitions
+
+| KPI | Chinese | Description | Formula |
+|-----|---------|-------------|---------|
+| **Coverage Rate** | 覆盖率 | % of configured sources successfully crawled | `crawled_sources / total_sources × 100` |
+| **Timeliness Score** | 时效性 | Average hours from article publication to collection | `AVG(fetched_at - published_at)` in hours |
+| **Accuracy Rate** | 识别准确率 | % of confirmed cases among reviewed intels | `confirmed / (confirmed + dismissed) × 100` |
+| **Noise Rate** | 噪音率 | % of false positives among reviewed intels | `dismissed / (confirmed + dismissed) × 100` |
+| **Reviewable Rate** | 可复核率 | % of intels with review logs | `reviewed_intels / total_intels × 100` |
+
+## 📊 Analytics & Reporting (V0.2)
+
+The Analytics module provides comprehensive data analysis and report generation capabilities.
+
+### Analytics Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/analytics/trend` | Time series trend of intel collection |
+| `GET /api/analytics/risk-distribution` | Distribution by risk level (high/medium/low) |
+| `GET /api/analytics/regional` | Geographic distribution of cases |
+| `GET /api/analytics/case-types` | Breakdown by case type |
+| `GET /api/analytics/sources` | Data source effectiveness metrics |
+| `GET /api/analytics/hourly-pattern` | Intel creation pattern by hour |
+| `GET /api/analytics/weekly-pattern` | Intel creation pattern by day of week |
+
+### Report Generation
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/reports/summary` | Executive summary in Chinese |
+| `GET /api/reports/weekly` | Weekly comprehensive report (Markdown/JSON) |
+| `GET /api/reports/monthly` | Monthly comprehensive report (Markdown/JSON) |
+| `GET /api/reports/custom` | Custom date range report |
+| `GET /api/reports/export` | Export report section as CSV |
+
+### Sample Analytics Response
+
+```json
+{
+  "period": {"start": "2026-02-01", "end": "2026-03-05"},
+  "total_regions": 15,
+  "data": [
+    {
+      "region": "上海",
+      "count": 42,
+      "percentage": 21.0,
+      "case_types": {"counterfeit": 20, "smuggling": 15, "unlicensed": 7}
+    }
+  ]
+}
+```
+
+### API Endpoint
+
+```bash
+GET /api/dashboard/kpi
+```
+
+### Sample Response
+
+```json
+{
+  "coverage_rate": {
+    "value": 8,
+    "total": 10,
+    "percentage": 80.0,
+    "description": "8/10 sources successfully crawled"
+  },
+  "timeliness_score": {
+    "value": 4.5,
+    "avg_hours": 4.5,
+    "description": "Average 4.5 hours from publish to collection"
+  },
+  "accuracy_rate": {
+    "value": 45,
+    "total": 60,
+    "percentage": 75.0,
+    "description": "45/60 reviewed intels confirmed as valid cases"
+  },
+  "noise_rate": {
+    "value": 15,
+    "total": 60,
+    "percentage": 25.0,
+    "description": "15/60 reviewed intels dismissed as noise"
+  },
+  "reviewable_rate": {
+    "value": 80,
+    "total": 100,
+    "percentage": 80.0,
+    "description": "80/100 intels have review logs"
+  }
+}
+```
+
 ## 🧪 Testing
 
 Run all tests:

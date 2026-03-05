@@ -4,6 +4,13 @@
 
 This runbook covers operational procedures for the Tobacco Situation Monitor V0.1 OSINT pipeline.
 
+## Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| V0.2 | 2026-03-05 | Added analytics and reporting module |
+| V0.1 | Initial | Core OSINT pipeline |
+
 ## Quick Reference
 
 ### Start the Service
@@ -93,6 +100,99 @@ Review payload:
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/dashboard/summary` | Get dashboard summary |
+| GET | `/api/dashboard/kpi` | Get OSINT effectiveness KPIs |
+
+### Analytics (V0.2)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/analytics/trend` | Time series trend analysis |
+| GET | `/api/analytics/risk-distribution` | Risk level distribution |
+| GET | `/api/analytics/regional` | Geographic distribution |
+| GET | `/api/analytics/case-types` | Case type breakdown |
+| GET | `/api/analytics/sources` | Data source effectiveness |
+| GET | `/api/analytics/hourly-pattern` | Hourly activity pattern |
+| GET | `/api/analytics/weekly-pattern` | Weekly activity pattern |
+
+Query parameters for analytics:
+- `start_date`: Start date (YYYY-MM-DD)
+- `end_date`: End date (YYYY-MM-DD)
+- `period`: Trend period (daily, weekly, monthly)
+- `limit`: Results limit (default 20)
+
+### Reports (V0.2)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/reports/summary` | Executive summary (中文) |
+| GET | `/api/reports/weekly` | Weekly report |
+| GET | `/api/reports/monthly` | Monthly report |
+| GET | `/api/reports/custom` | Custom date range report |
+| GET | `/api/reports/export` | CSV export |
+
+Report parameters:
+- `format`: Output format (markdown, json)
+- `section`: Export section (summary, regional, case_types, sources)
+
+#### Sample Analytics Request
+
+```bash
+# Get trend for last 30 days
+curl "http://localhost:8000/api/analytics/trend?period=daily"
+
+# Get regional distribution
+curl "http://localhost:8000/api/analytics/regional?limit=10"
+
+# Generate weekly report
+curl "http://localhost:8000/api/reports/weekly?format=markdown"
+```
+
+#### KPI Dashboard (V0.1)
+
+The `/api/dashboard/kpi` endpoint returns 5 key performance indicators for monitoring OSINT pipeline effectiveness:
+
+| KPI | Chinese | Description | Formula |
+|-----|---------|-------------|---------|
+| `coverage_rate` | 覆盖率 | % of sources successfully crawled | `crawled_sources / total_sources × 100` |
+| `timeliness_score` | 时效性 | Avg hours from publish to collection | `AVG(fetched_at - published_at)` |
+| `accuracy_rate` | 识别准确率 | % of confirmed intels | `confirmed / (confirmed + dismissed) × 100` |
+| `noise_rate` | 噪音率 | % of false positives | `dismissed / (confirmed + dismissed) × 100` |
+| `reviewable_rate` | 可复核率 | % of intels with reviews | `reviewed_intels / total_intels × 100` |
+
+**Sample KPI Response:**
+```json
+{
+  "coverage_rate": {
+    "value": 8,
+    "total": 10,
+    "percentage": 80.0,
+    "description": "8/10 sources successfully crawled"
+  },
+  "timeliness_score": {
+    "value": 4.5,
+    "avg_hours": 4.5,
+    "description": "Average 4.5 hours from publish to collection"
+  },
+  "accuracy_rate": {
+    "value": 45,
+    "total": 60,
+    "percentage": 75.0,
+    "description": "45/60 reviewed intels confirmed as valid cases"
+  },
+  "noise_rate": {
+    "value": 15,
+    "total": 60,
+    "percentage": 25.0,
+    "description": "15/60 reviewed intels dismissed as noise"
+  },
+  "reviewable_rate": {
+    "value": 80,
+    "total": 100,
+    "percentage": 80.0,
+    "description": "80/100 intels have review logs"
+  }
+}
+```
 
 ## Pipeline Flow
 
@@ -201,6 +301,14 @@ Expected response:
   "by_region": []
 }
 ```
+
+### KPI Health Check
+
+```bash
+curl http://localhost:8000/api/dashboard/kpi
+```
+
+Expected response includes all 5 KPIs with percentages and descriptions.
 
 ## Logs
 

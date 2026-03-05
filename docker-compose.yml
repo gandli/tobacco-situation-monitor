@@ -1,0 +1,74 @@
+# Docker Compose for TSM development and production
+# Usage: docker-compose up -d
+
+version: "3.8"
+
+services:
+  tsm:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: tsm-app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - TSM_DEBUG=false
+      - TSM_LOG_LEVEL=INFO
+      - TSM_DATABASE_PATH=/app/data/tsm.db
+      - TSM_LOG_FILE=/app/logs/tsm.log
+      - TSM_CRAWLER_TIMEOUT=15.0
+      - TSM_CRAWLER_DELAY=2.0
+    volumes:
+      - tsm-data:/app/data
+      - tsm-logs:/app/logs
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - tsm-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Development service with hot reload
+  tsm-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: tsm-dev
+    profiles:
+      - dev
+    ports:
+      - "8001:8000"
+    environment:
+      - TSM_DEBUG=true
+      - TSM_LOG_LEVEL=DEBUG
+      - TSM_DATABASE_PATH=/app/data/tsm-dev.db
+    volumes:
+      - ./src:/app/src:ro
+      - ./tests:/app/tests:ro
+      - tsm-dev-data:/app/data
+    command: ["uvicorn", "tsm.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    networks:
+      - tsm-network
+
+volumes:
+  tsm-data:
+    name: tsm-data
+  tsm-logs:
+    name: tsm-logs
+  tsm-dev-data:
+    name: tsm-dev-data
+
+networks:
+  tsm-network:
+    name: tsm-network
+    driver: bridge
