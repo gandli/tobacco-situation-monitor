@@ -46,12 +46,34 @@ Tobacco Situation Monitor (TSM) is an open-source intelligence (OSINT) platform 
 - **Public Records**: Business registration, maritime AIS data
 - **Crowdsourced Intelligence**: Anonymous tip submissions
 
+## 📚 Documentation
+
+- **[Operations Runbook](docs/runbook-v01.md)** - Operational procedures for V0.1 pipeline
+
+## 🧪 Testing
+
+Run all tests:
+```bash
+pytest -v
+```
+
+Run specific test categories:
+```bash
+# Unit tests
+pytest tests/test_classifier.py tests/test_scoring.py tests/test_deduper.py -v
+
+# API tests
+pytest tests/test_sources_api.py tests/test_dashboard_api.py tests/test_review_api.py -v
+
+# End-to-end pipeline test
+pytest tests/test_e2e_pipeline.py -v
+```
+
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+
-- Cloudflare account with Workers enabled
-- GitHub account for repository access
+- Python 3.12+
+- SQLite3
 
 ### Installation
 
