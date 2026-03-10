@@ -22,7 +22,9 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     setup_logging(level=settings.log_level, log_file=settings.log_file)
     logger.info(f"Starting {settings.app_name} v{settings.version}")
     logger.info(f"Debug mode: {settings.debug}")
-    logger.info(f"Database: {settings.database_path}")
+    # Only log database path in debug mode for security
+    if settings.debug:
+        logger.info(f"Database: {settings.database_path}")
 
     yield
 
@@ -50,7 +52,7 @@ app.add_middleware(
 @app.exception_handler(DatabaseError)
 async def database_error_handler(request: Request, exc: DatabaseError):
     """Handle database errors globally."""
-    logger.error(f"Database error: {exc}")
+    logger.exception("Database error occurred")
     return JSONResponse(
         status_code=500,
         content={"detail": "Database operation failed. Please try again later."}
