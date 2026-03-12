@@ -1,0 +1,14 @@
+{
+  "$schema": "https://developers.cloudflare.com/pages/platform/build-configuration",
+  "build": {
+    "command": "npm run build",
+    "outputDirectory": "dist",
+    "rootDirectory": ""
+  },
+  "routes": [
+    {
+      "pattern": "/*",
+      "serve": "/index.html"
+    }
+  ]
+}

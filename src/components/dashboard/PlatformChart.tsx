@@ -9,7 +9,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts';
-import { PlatformStats } from '../../types';
+import type { PlatformStats } from '../../types';
 
 interface PlatformChartProps {
   data: PlatformStats[];
@@ -40,14 +40,16 @@ export const PlatformChart: React.FC<PlatformChartProps> = ({ data }) => {
                 borderRadius: '8px',
                 boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
               }}
-              formatter={(value: number, name: string) => {
-                if (name === 'count') return [value, '线索数量'];
-                if (name === 'avgRiskScore') return [value, '平均风险分'];
-                return [value, name];
+              formatter={(value, name) => {
+                const numValue = typeof value === 'number' ? value : 0;
+                const strName = String(name);
+                if (strName === 'count') return [numValue, '线索数量'];
+                if (strName === 'avgRiskScore') return [numValue, '平均风险分'];
+                return [numValue, strName];
               }}
             />
             <Bar dataKey="count" name="count" radius={[0, 4, 4, 0]}>
-              {data.map((entry, index) => (
+              {data.map((_, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
             </Bar>

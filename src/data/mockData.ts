@@ -1,4 +1,4 @@
-import { Clue, Case, GraphData, DashboardStats, TrendData, PlatformStats } from '../types';
+import type { Clue, Case, GraphData, DashboardStats, TrendData, PlatformStats } from '../types';
 
 const platforms = ['淘宝', '京东', '拼多多', '抖音', '快手', '微信', '闲鱼', '转转'];
 const provinces = ['广东省', '浙江省', '江苏省', '山东省', '河南省', '四川省', '湖北省', '福建省'];
@@ -41,7 +41,7 @@ function calculateRiskLevel(score: number): 'low' | 'medium' | 'high' | 'critica
   return 'low';
 }
 
-function generateClue(index: number): Clue {
+function generateClue(_index: number): Clue {
   const province = randomItem(provinces);
   const city = randomItem(cities[province]);
   const riskScore = randomInt(20, 95);

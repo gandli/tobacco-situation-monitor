@@ -9,7 +9,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { TrendData } from '../../types';
+import type { TrendData } from '../../types';
 
 interface TrendChartProps {
   data: TrendData[];

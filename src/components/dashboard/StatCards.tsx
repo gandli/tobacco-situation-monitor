@@ -7,7 +7,7 @@ import {
   TrendingUp,
   TrendingDown
 } from 'lucide-react';
-import { DashboardStats } from '../../types';
+import type { DashboardStats } from '../../types';
 
 interface StatCardsProps {
   stats: DashboardStats;
